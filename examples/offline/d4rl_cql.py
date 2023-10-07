@@ -73,7 +73,7 @@ def get_args():
     return parser.parse_args()
 
 
-def test_cql():
+def algo_cql():
     args = get_args()
     env = gym.make(args.task)
     args.state_shape = env.observation_space.shape or env.observation_space.n
@@ -177,7 +177,7 @@ def test_cql():
     # logger
     if args.logger == "wandb":
         logger = WandbLogger(
-            save_interval=1,
+            saveGrid_2D_4x4_discrete_V0_interval=1,
             name=log_name.replace(os.path.sep, "__"),
             run_id=args.resume_id,
             config=args,
@@ -231,4 +231,4 @@ def test_cql():
 
 
 if __name__ == "__main__":
-    test_cql()
+    algo_cql()

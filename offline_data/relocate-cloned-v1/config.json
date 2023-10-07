@@ -1,0 +1,7 @@
+{
+    "env_name": "AdroitHandRelocate-v1",
+    "data_set_name": "relocate-cloned-v1",
+    "num_steps": 1000000,
+    "behavior_policy": "Unknowm",
+    "initial_config_2d_grid_env": null
+}

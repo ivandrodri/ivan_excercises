@@ -4,9 +4,13 @@ import argparse
 import datetime
 import os
 import pprint
+from typing import Dict
+import gymnasium as gym
 
 import numpy as np
 import torch
+from gymnasium.spaces import Box
+
 from mujoco_env import make_mujoco_env
 from torch import nn
 from torch.distributions import Independent, Normal
@@ -24,6 +28,8 @@ from tianshou.utils.net.continuous import ActorProb, Critic
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--task", type=str, default="Ant-v3")
+    #parser.add_argument("--task", type=str, default="PointMaze_Medium-v3")
+
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--buffer-size", type=int, default=4096)
     parser.add_argument("--hidden-sizes", type=int, nargs="*", default=[64, 64])
@@ -73,11 +79,22 @@ def get_args():
     return parser.parse_args()
 
 
-def test_ppo(args=get_args()):
+def ppo_v1(args=get_args()):
     env, train_envs, test_envs = make_mujoco_env(
         args.task, args.seed, args.training_num, args.test_num, obs_norm=True
     )
-    args.state_shape = env.observation_space.shape or env.observation_space.n
+
+    if isinstance(env.observation_space, gym.spaces.dict.Dict):
+        args.state_shape = env.observation_space["observation"].shape
+    elif isinstance(env.observation_space, gym.spaces.box.Box):
+        args.state_shape = env.observation_space.shape or env.observation_space.n
+    else:
+        raise ValueError(f"the observation_space object must be of one of these types "
+                         f"{Dict, Box} but a type {type(env.observation_space)} was given")
+
+
+    #args.state_shape = env.observation_space.shape or env.observation_space.n
+
     args.action_shape = env.action_space.shape or env.action_space.n
     args.max_action = env.action_space.high[0]
     print("Observations shape:", args.state_shape)
@@ -229,4 +246,4 @@ def test_ppo(args=get_args()):
 
 
 if __name__ == "__main__":
-    test_ppo()
+    ppo_v1()

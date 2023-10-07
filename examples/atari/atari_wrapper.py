@@ -10,10 +10,12 @@ import numpy as np
 
 from tianshou.env import ShmemVectorEnv
 
+
 try:
     import envpool
 except ImportError:
     envpool = None
+
 
 
 def _parse_reset_result(reset_result):

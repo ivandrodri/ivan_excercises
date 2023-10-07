@@ -1,0 +1,26 @@
+{
+    "env_name": "Grid_2D_8x8_discrete",
+    "data_set_name": "Grid_2D_8x8_discrete-data_obst_middle_8x8_start_0_0_target_7_7-v0",
+    "num_steps": 5000,
+    "behavior_policy": "random",
+    "initial_config_2d_grid_env": {
+        "obstacles": [
+            "00000000",
+            "00000000",
+            "00000000",
+            "00000000",
+            "00001000",
+            "00000000",
+            "00000000",
+            "00000000"
+        ],
+        "initial_state": [
+            0,
+            0
+        ],
+        "target_state": [
+            7,
+            7
+        ]
+    }
+}

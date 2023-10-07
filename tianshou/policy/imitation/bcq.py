@@ -108,6 +108,11 @@ class BCQPolicy(BasePolicy):
         act_group = []
         for obs in obs_group:
             # now obs is (state_dim)
+
+            # if the observation in the reply buffer is a dictionary then obs could be a Batch obj
+            if isinstance(obs, Batch):
+                obs = obs.observation
+
             obs = (obs.reshape(1, -1)).repeat(self.forward_sampled_times, 1)
             # now obs is (forward_sampled_times, state_dim)
 

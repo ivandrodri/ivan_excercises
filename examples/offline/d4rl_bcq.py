@@ -4,13 +4,15 @@ import argparse
 import datetime
 import os
 import pprint
+from typing import Dict
 
-import gymnasium as gym
 import numpy as np
 import torch
+from gym.spaces import Box
 from torch.utils.tensorboard import SummaryWriter
+import gymnasium as gym
 
-from examples.offline.utils import load_buffer_d4rl
+from examples.offline.utils import load_buffer_d4rl, load_buffer_minari
 from tianshou.data import Collector
 from tianshou.env import SubprocVectorEnv
 from tianshou.policy import BCQPolicy
@@ -19,24 +21,56 @@ from tianshou.utils import TensorboardLogger, WandbLogger
 from tianshou.utils.net.common import MLP, Net
 from tianshou.utils.net.continuous import VAE, Critic, Perturbation
 
+#NAME_ENV = "Ant-v3"
+#NAME_EXPERT_DATA="ant-medium-expert-v0"
+#D4RL = True
+
+
+#NAME_ENV = "HalfCheetah"
+#NAME_EXPERT_DATA="halfcheetah-expert"
+#D4RL = True
+
+#NAME_ENV = "PointMaze_Medium-v3"
+#NAME_EXPERT_DATA="pointmaze-medium-v1"
+#D4RL = False
+
+#NAME_ENV = "PointMaze_Medium-v3"
+#NAME_EXPERT_DATA="pointmaze-umaze-v1"
+#D4RL = False
+
+#NAME_ENV = "AdroitHandPen-v1"
+#NAME_EXPERT_DATA="pen-expert-v1"
+#D4RL = False
+
+#NAME_ENV = "PointMaze_Medium-v3"
+#NAME_EXPERT_DATA="maze2d-umaze-v1"
+#D4RL = True
+
+NAME_ENV = "PointMaze_Medium-v3"
+NAME_EXPERT_DATA="point-maze-subseted_Ivan_v0"
+D4RL = False
+
+
+
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--task", type=str, default="HalfCheetah-v2")
-    parser.add_argument("--seed", type=int, default=0)
+
+    parser.add_argument("--task", type=str, default=NAME_ENV)
     parser.add_argument(
-        "--expert-data-task", type=str, default="halfcheetah-expert-v2"
-    )
+            "--expert-data-task", type=str, default=NAME_EXPERT_DATA
+        )
+    parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--buffer-size", type=int, default=1000000)
     parser.add_argument("--hidden-sizes", type=int, nargs="*", default=[256, 256])
     parser.add_argument("--actor-lr", type=float, default=1e-3)
     parser.add_argument("--critic-lr", type=float, default=1e-3)
     parser.add_argument("--start-timesteps", type=int, default=10000)
-    parser.add_argument("--epoch", type=int, default=200)
-    parser.add_argument("--step-per-epoch", type=int, default=5000)
-    parser.add_argument("--n-step", type=int, default=3)
+    parser.add_argument("--epoch", type=int, default=10)
+    parser.add_argument("--step-per-epoch", type=int, default=50)
+    parser.add_argument("--n-step", type=int, default=100)
     parser.add_argument("--batch-size", type=int, default=256)
-    parser.add_argument("--test-num", type=int, default=10)
+    parser.add_argument("--test-num", type=int, default=2)
     parser.add_argument("--logdir", type=str, default="log")
     parser.add_argument("--render", type=float, default=1 / 35)
 
@@ -70,10 +104,45 @@ def get_args():
     return parser.parse_args()
 
 
-def test_bcq():
+def custom_env_registration(max_episode_steps:int):
+    id = "HalfCheetah-v5"
+    entry_point = "gymnasium.envs.mujoco:HalfCheetahEnv"
+    reward_threshold = 4800.0
+
+    return gym.envs.register(
+            id=id,
+            entry_point=entry_point,
+            max_episode_steps=max_episode_steps,
+            reward_threshold=reward_threshold,
+        )
+
+
+def create_collectors():
+    pass
+
+def teto_bcq():
+
+    # ToDo: hardcoded --> To be changed
+    #custom_env_registration(max_episode_steps=50)
+
     args = get_args()
-    env = gym.make(args.task)
-    args.state_shape = env.observation_space.shape or env.observation_space.n
+    env = gym.make(args.task, render_mode='human')
+
+
+    #from examples.custom_env_d4rl import CustomGridEnv
+    #env = CustomGridEnv(10, 2, 7)
+
+    # ToDo: This must change dependig on observation type (Is this because gym/gymnasium incomp.)
+
+    if isinstance(env.observation_space, gym.spaces.dict.Dict):
+        args.state_shape = env.observation_space["observation"].shape
+    elif isinstance(env.observation_space, gym.spaces.box.Box):
+        args.state_shape = env.observation_space.shape or env.observation_space.n
+    else:
+        raise ValueError(f"the observation_space object must be of one of these types "
+                         f"{Dict, Box} but a type {type(env.observation_space)} was given")
+    #args.state_shape = env.observation_space["observation"].shape
+
     args.action_shape = env.action_space.shape or env.action_space.n
     args.max_action = env.action_space.high[0]  # float
     print("device:", args.device)
@@ -181,7 +250,7 @@ def test_bcq():
     log_path = os.path.join(args.logdir, log_name)
 
     # logger
-    if args.logger == "wandb":
+    if args.logger == "OfflineTrainerwandb":
         logger = WandbLogger(
             save_interval=1,
             name=log_name.replace(os.path.sep, "__"),
@@ -208,33 +277,68 @@ def test_bcq():
         )
         policy.eval()
         collector = Collector(policy, env)
-        collector.collect(n_episode=1, render=1 / 35)
+        collector.collect(n_episode=10, render=args.render)
+        #env.reset()
 
     if not args.watch:
-        replay_buffer = load_buffer_d4rl(args.expert_data_task)
+
+        # ToDo: This cannot be hardcoded. Decide if use D4RL or minari or both
+        if D4RL:
+            replay_buffer = load_buffer_d4rl(args.expert_data_task)
+        else:
+            replay_buffer = load_buffer_minari(args.expert_data_task)
+
         # trainer
-        result = offline_trainer(
-            policy,
-            replay_buffer,
-            test_collector,
-            args.epoch,
-            args.step_per_epoch,
-            args.test_num,
-            args.batch_size,
-            save_best_fn=save_best_fn,
-            logger=logger,
-        )
-        pprint.pprint(result)
+        for id_epoch in range(args.epoch):
+            result = offline_trainer(
+                policy,
+                replay_buffer,
+                test_collector,
+                id_epoch,
+                args.step_per_epoch,
+                args.test_num,
+                args.batch_size,
+                save_best_fn=save_best_fn,
+                logger=logger,
+            )
+            pprint.pprint(result)
+
+            # Let's watch its performance after every epoch!
+            policy.eval()
+            collector = Collector(policy, env)
+            collector.collect(n_step=500, render=args.render)
+            #collector.collect(n_step=500)
+
     else:
         watch()
 
-    # Let's watch its performance!
-    policy.eval()
-    test_envs.seed(args.seed)
-    test_collector.reset()
-    result = test_collector.collect(n_episode=args.test_num, render=args.render)
-    print(f"Final reward: {result['rews'].mean()}, length: {result['lens'].mean()}")
+#        result = offline_trainer(
+#            policy,
+#            replay_buffer,
+#            test_collector,
+#            args.epoch,
+#            args.step_per_epoch,
+#            args.test_num,
+#            args.batch_size,
+#            save_best_fn=save_best_fn,
+#            logger=logger,
+#        )
+#        pprint.pprint(result)
+#    else:
+#        watch()
 
+
+    # Let's watch its performance!
+    #policy.eval()
+    #test_envs.seed(args.seed)
+    #test_collector.reset()
+    #result = test_collector.collect(n_episode=args.test_num, render=args.render)
+    #print(result)
+    #print(f"Final reward: {result['rews'].mean()}, length: {result['lens'].mean()}")
+
+    # ToDo: To avoid error with rendering closing
+    #import glfw
+    #glfw.terminate()
 
 if __name__ == "__main__":
-    test_bcq()
+    teto_bcq()

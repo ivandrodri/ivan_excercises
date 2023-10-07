@@ -1,0 +1,32 @@
+{
+    "name_expert_data": "Ant-v2-data-v0",
+    "policy_name": "cql_continuous",
+    "render_mode": "rgb_array_list",
+    "minari_dataset_config": {
+        "env_name": "Ant-v2",
+        "data_set_name": "Ant-v2-data-v0",
+        "num_steps": 1000,
+        "behavior_policy": "random",
+        "initial_config_2d_grid_env": null
+    },
+    "policy_config": {
+        "lr": 0.001,
+        "gamma": 0.99,
+        "hidden_sizes": [
+            256
+        ],
+        "critic_lr": 0.0003,
+        "auto_alpha": true,
+        "alpha_lr": 0.0001,
+        "actor_lr": 0.0001,
+        "alpha": 0.3,
+        "cql_alpha_lr": 0.0003,
+        "cql_weight": 1.0,
+        "tau": 0.005,
+        "temperature": 1.0,
+        "with_lagrange": true,
+        "lagrange_threshold": 10.0,
+        "device": "cpu"
+    },
+    "device": "cpu"
+}

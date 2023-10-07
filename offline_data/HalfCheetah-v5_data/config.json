@@ -1,0 +1,6 @@
+{
+    "env_name": "HalfCheetah-v5",
+    "data_set_name": "HalfCheetah-v5_data",
+    "num_steps": 3000,
+    "behavior_policy": "random"
+}

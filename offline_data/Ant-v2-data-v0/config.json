@@ -1,0 +1,7 @@
+{
+    "env_name": "Ant-v2",
+    "data_set_name": "Ant-v2-data-v0",
+    "num_steps": 1000,
+    "behavior_policy": "random",
+    "initial_config_2d_grid_env": null
+}

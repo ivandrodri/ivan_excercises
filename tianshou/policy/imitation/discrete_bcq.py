@@ -93,10 +93,20 @@ class DiscreteBCQPolicy(DQNPolicy):
             self.max_action_num = q_value.shape[1]
         imitation_logits, _ = self.imitator(obs, state=state, info=batch.info)
 
+
+
         # mask actions for argmax
+        #ratio = imitation_logits - imitation_logits.max(dim=-1, keepdim=True).values
+        #mask = (ratio < self._log_tau).float()
+        #act = (q_value - np.inf * mask).argmax(dim=-1)
+
+        # mask actions for argmax --> Ivan's version
         ratio = imitation_logits - imitation_logits.max(dim=-1, keepdim=True).values
-        mask = (ratio < self._log_tau).float()
-        act = (q_value - np.inf * mask).argmax(dim=-1)
+        mask = (ratio > self._log_tau).to(torch.float32)
+        #q_value *= mask
+        q_values = q_value - (1 - mask) * 100000000000
+        act = q_values.argmax(dim=1)
+
 
         return Batch(
             act=act, state=state, q_value=q_value, imitation_logits=imitation_logits

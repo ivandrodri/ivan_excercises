@@ -70,7 +70,7 @@ def get_args():
     return args
 
 
-def test_discrete_bcq(args=get_args()):
+def atari_discrete_bcq(args=get_args()):
     # envs
     env, _, test_envs = make_atari_env(
         args.task,
@@ -199,4 +199,4 @@ def test_discrete_bcq(args=get_args()):
 
 
 if __name__ == "__main__":
-    test_discrete_bcq(get_args())
+    atari_discrete_bcq(get_args())

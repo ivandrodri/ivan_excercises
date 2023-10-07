@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  my_app:
+    #image: ivanrodri2020/tianshou
+    user: root
+    image: tianshou_dev
+    network_mode: "host"
+    environment:
+      - DISPLAY=$DISPLAY
+    privileged: True
+    volumes:
+      - ./:/tianshou
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      #- ENV1: "DISPLAY=$DISPLAY"
+    working_dir: /tianshou
+    command: ["/tianshou/entry.sh","bash"]

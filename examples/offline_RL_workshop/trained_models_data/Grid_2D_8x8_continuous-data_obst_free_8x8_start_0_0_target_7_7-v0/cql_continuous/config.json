@@ -1,0 +1,51 @@
+{
+    "name_expert_data": "Grid_2D_8x8_continuous-data_obst_free_8x8_start_0_0_target_7_7-v0",
+    "policy_name": "cql_continuous",
+    "render_mode": "rgb_array_list",
+    "minari_dataset_config": {
+        "env_name": "Grid_2D_8x8_continuous",
+        "data_set_name": "Grid_2D_8x8_continuous-data_obst_free_8x8_start_0_0_target_7_7-v0",
+        "num_steps": 5000,
+        "behavior_policy": "random",
+        "initial_config_2d_grid_env": {
+            "obstacles": [
+                "00000000",
+                "00000000",
+                "00000000",
+                "00000000",
+                "00000000",
+                "00000000",
+                "00000000",
+                "00000000"
+            ],
+            "initial_state": [
+                0,
+                0
+            ],
+            "target_state": [
+                7,
+                7
+            ]
+        }
+    },
+    "policy_config": {
+        "lr": 0.001,
+        "gamma": 0.99,
+        "hidden_sizes": [
+            256
+        ],
+        "critic_lr": 0.0003,
+        "auto_alpha": true,
+        "alpha_lr": 0.0001,
+        "actor_lr": 0.0001,
+        "alpha": 0.3,
+        "cql_alpha_lr": 0.0003,
+        "cql_weight": 1.0,
+        "tau": 0.005,
+        "temperature": 1.0,
+        "with_lagrange": true,
+        "lagrange_threshold": 10.0,
+        "device": "cpu"
+    },
+    "device": "cpu"
+}

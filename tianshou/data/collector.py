@@ -2,6 +2,7 @@ import time
 import warnings
 from typing import Any, Callable, Dict, List, Optional, Union
 
+import cv2
 import gymnasium as gym
 import numpy as np
 import torch
@@ -62,6 +63,7 @@ class Collector(object):
         buffer: Optional[ReplayBuffer] = None,
         preprocess_fn: Optional[Callable[..., Batch]] = None,
         exploration_noise: bool = False,
+        render=False,
     ) -> None:
         super().__init__()
         if isinstance(env, gym.Env) and not hasattr(env, "__len__"):
@@ -77,6 +79,7 @@ class Collector(object):
         self._action_space = self.env.action_space
         # avoid creating attribute outside __init__
         self.reset(False)
+        self.render = render
 
     def _assign_buffer(self, buffer: Optional[ReplayBuffer]) -> None:
         """Check if the buffer matches the constraint."""
@@ -296,6 +299,9 @@ class Collector(object):
                 action_remap,  # type: ignore
                 ready_env_ids
             )
+            
+
+            
             done = np.logical_or(terminated, truncated)
 
             self.data.update(
@@ -319,10 +325,22 @@ class Collector(object):
                     )
                 )
 
-            if render:
-                self.env.render()
-                if render > 0 and not np.isclose(render, 0):
-                    time.sleep(render)
+            if self.render or render:
+
+                rendered_data = self.env.render()
+
+                # ToDo: Do this better
+                if isinstance(rendered_data[0], list):# and all(isinstance(item, np.ndarray) for item in rendered_data[0]):
+                    frames = rendered_data[0]
+                    height, width, _ = frames[0].shape
+                    cv2.imshow('Video', frames[0])
+                    if cv2.waitKey(1) & 0xFF == ord('q'):
+                        raise InterruptedError("You quited ('q') the iteration.")
+
+                else:
+                    #self.env.render()
+                    if self.render > 0 and not np.isclose(render, 0):
+                        time.sleep(self.render)
 
             # add data into the buffer
             ptr, ep_rew, ep_len, ep_idx = self.buffer.add(

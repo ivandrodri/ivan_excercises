@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union, Dict
 
 import numpy as np
 
@@ -94,6 +94,9 @@ class VectorEnvNormObs(VectorEnvWrapper):
                 "Please change it to array or dict space",
             )
 
+        #ToDo: change!!
+        if isinstance(obs[0], Dict):
+            obs = obs[0]["observation"].reshape(1,-1)
         if self.obs_rms and self.update_obs_rms:
             self.obs_rms.update(obs)
         obs = self._norm_obs(obs)
@@ -105,9 +108,20 @@ class VectorEnvNormObs(VectorEnvWrapper):
         id: Optional[Union[int, List[int], np.ndarray]] = None,
     ) -> gym_new_venv_step_type:
         step_results = self.venv.step(action, id)
+
+        #ToDo: Change it
+        if isinstance(step_results[0][0], Dict):
+            obs = step_results[0][0]["observation"].reshape(1,-1)
+        else:
+            obs = step_results[0]
         if self.obs_rms and self.update_obs_rms:
-            self.obs_rms.update(step_results[0])
-        return (self._norm_obs(step_results[0]), *step_results[1:])
+             self.obs_rms.update(obs)
+        return (self._norm_obs(obs), *step_results[1:])
+
+
+        #if self.obs_rms and self.update_obs_rms:
+            #self.obs_rms.update(step_results[0])
+        # return (self._norm_obs(step_results[0]), *step_results[1:])
 
     def _norm_obs(self, obs: np.ndarray) -> np.ndarray:
         if self.obs_rms:

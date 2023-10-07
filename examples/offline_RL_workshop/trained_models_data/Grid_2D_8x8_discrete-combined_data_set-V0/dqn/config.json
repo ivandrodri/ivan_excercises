@@ -1,0 +1,45 @@
+{
+    "name_expert_data": "Grid_2D_8x8_discrete-combined_data_set-V0",
+    "policy_name": "dqn",
+    "render_mode": "rgb_array_list",
+    "minari_dataset_config": {
+        "env_name": "Grid_2D_8x8_discrete",
+        "data_set_name": "Grid_2D_8x8_discrete-combined_data_set-V0",
+        "num_steps": 3000,
+        "behavior_policy": "behavior_suboptimal_2d_grid_discrete_case_a",
+        "initial_config_2d_grid_env": {
+            "obstacles": [
+                "00000000",
+                "00000000",
+                "00000000",
+                "00000000",
+                "00001000",
+                "00000000",
+                "00000000",
+                "00000000"
+            ],
+            "initial_state": [
+                0,
+                0
+            ],
+            "target_state": [
+                7,
+                7
+            ]
+        }
+    },
+    "policy_config": {
+        "lr": 0.001,
+        "gamma": 0.99,
+        "device": "cpu",
+        "hidden_sizes": [
+            256,
+            256,
+            256
+        ],
+        "n_steps": 1,
+        "target_freq": 100,
+        "epsilon": 0.01
+    },
+    "device": "cpu"
+}

@@ -45,6 +45,7 @@ class ImitationPolicy(BasePolicy):
         logits, hidden = self.model(batch.obs, state=state, info=batch.info)
         if self.action_type == "discrete":
             act = logits.max(dim=1)[1]
+            #act = torch.distributions.Categorical(logits=logits).sample()
         else:
             act = logits
         return Batch(logits=logits, act=act, state=hidden)

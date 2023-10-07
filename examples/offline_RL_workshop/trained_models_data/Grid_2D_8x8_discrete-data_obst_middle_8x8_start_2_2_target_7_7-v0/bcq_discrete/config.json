@@ -1,0 +1,41 @@
+{
+    "name_expert_data": "Grid_2D_8x8_discrete-data_obst_middle_8x8_start_2_2_target_7_7-v0",
+    "policy_name": "bcq_discrete",
+    "render_mode": "rgb_array_list",
+    "minari_dataset_config": {
+        "env_name": "Grid_2D_8x8_discrete",
+        "data_set_name": "Grid_2D_8x8_discrete-data_obst_middle_8x8_start_2_2_target_7_7-v0",
+        "num_steps": 1000,
+        "behavior_policy": "random",
+        "initial_config_2d_grid_env": {
+            "obstacles": [
+                "00000000",
+                "00000000",
+                "00000000",
+                "00000000",
+                "00001000",
+                "00000000",
+                "00000000",
+                "00000000"
+            ],
+            "initial_state": [
+                2,
+                2
+            ],
+            "target_state": [
+                7,
+                7
+            ]
+        }
+    },
+    "policy_config": {
+        "lr": 0.001,
+        "gamma": 0.99,
+        "n_step": 5,
+        "target_update_freq": 100,
+        "eps_test": 0.01,
+        "unlikely_action_threshold": 0.9,
+        "imitation_logits_penalty": 0.001
+    },
+    "device": "cpu"
+}
