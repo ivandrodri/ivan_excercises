@@ -4,7 +4,7 @@ import gymnasium as gym
 import minari
 import numpy as np
 import torch
-from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyType, PolicyRestorationConfigFactoryRegistry
+from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyName, PolicyRestorationConfigFactoryRegistry
 from examples.offline_RL_workshop.utils import extract_dimension, one_hot_to_integer, state_action_histogram, \
     compare_state_action_histograms
 from tianshou.data import Collector, Batch
@@ -19,7 +19,7 @@ config = {
     #"POLICY_NAME": PolicyType.dqn,
     #"POLICY_NAME": PolicyType.bcq_discrete,
     #"POLICY_NAME": PolicyType.bcq_continuous,
-    "POLICY_NAME": PolicyType.cql_continuous,
+    "POLICY_NAME": PolicyName.cql_continuous,
     "render_mode": "rgb_array_list",
 }
 

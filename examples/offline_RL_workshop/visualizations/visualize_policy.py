@@ -5,9 +5,9 @@ import torch
 import tianshou.policy
 from examples.offline_RL_workshop.custom_envs.custom_envs_registration import register_grid_envs, RenderMode
 from examples.offline_RL_workshop.custom_envs.utils import is_instance_of_SimpleGridEnv, InitialConfigEnvWrapper
-from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyType, \
+from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyName, \
     PolicyRestorationConfigFactoryRegistry
-from examples.offline_RL_workshop.offline_trainings.policy_config_data_class import OfflineTrainedPolicyConfig, \
+from examples.offline_RL_workshop.offline_trainings.policy_config_data_class import TrainedPolicyConfig, \
     get_trained_policy_path
 from examples.offline_RL_workshop.offline_trainings.restore_policy_model import restore_trained_offline_policy
 from tianshou.data import Collector
@@ -21,11 +21,11 @@ NAME_EXPERT_DATA = "relocate-cloned-v1"
 #"Grid_2D_4x4_discrete-data_obst_free_4x4_start_0_0_target_3_3-v0"
 #"Grid_2D_8x8_discrete-data_obst_middle_8x8_start_0_0_target_7_7-v0"
 #"Ant-v2-data-v0"
-POLICY_TYPE = PolicyType.cql_continuous
+POLICY_TYPE = PolicyName.dqn
 EXPLORATION_NOISE = True
-POLICY_NAME = "policy.pth"
+POLICY_NAME = "policy_final.pth"
 
-offline_policy_config = OfflineTrainedPolicyConfig(
+offline_policy_config = TrainedPolicyConfig(
     name_expert_data=NAME_EXPERT_DATA,
     policy_name=POLICY_TYPE,
     render_mode=RenderMode.RGB_ARRAY_LIST,

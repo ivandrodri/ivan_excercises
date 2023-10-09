@@ -1,3 +1,6 @@
+import sys
+#sys.path.append('/tianshou/')
+
 from typing import Union, Callable, Dict
 
 import cv2
@@ -49,6 +52,7 @@ def render_custom_policy_simple_grid(
         next_state, reward, done, time_out, info = env.step(action)
         num_steps += 1
 
+
         if render_mode==RenderMode.RGB_ARRAY_LIST:
             rendered_data = env.render()
             frames = rendered_data[0]
@@ -60,7 +64,6 @@ def render_custom_policy_simple_grid(
                 raise InterruptedError("You quited ('q') the iteration.")
         else:
             env.render()
-
 
         if done or time_out:
             state, _ = env.reset()

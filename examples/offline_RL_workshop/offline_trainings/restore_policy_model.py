@@ -3,10 +3,10 @@ import tianshou
 from examples.offline_RL_workshop.custom_envs.custom_envs_registration import register_grid_envs
 from examples.offline_RL_workshop.custom_envs.utils import InitialConfigEnvWrapper
 from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyRestorationConfigFactoryRegistry
-from examples.offline_RL_workshop.offline_trainings.policy_config_data_class import OfflineTrainedPolicyConfig
+from examples.offline_RL_workshop.offline_trainings.policy_config_data_class import TrainedPolicyConfig
 
 
-def restore_trained_offline_policy(offline_policy_config: OfflineTrainedPolicyConfig) \
+def restore_trained_offline_policy(offline_policy_config: TrainedPolicyConfig) \
         -> tianshou.policy.BasePolicy:
 
     register_grid_envs()

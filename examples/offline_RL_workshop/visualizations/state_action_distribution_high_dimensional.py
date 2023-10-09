@@ -3,7 +3,7 @@ import torch
 
 from examples.offline.utils import load_buffer_minari
 from examples.offline_RL_workshop.custom_envs.custom_envs_registration import register_grid_envs
-from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyType
+from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyName
 from examples.offline_RL_workshop.offline_trainings.restore_policy_model import restore_trained_offline_policy
 import numpy as np
 import matplotlib.pyplot as plt
@@ -31,7 +31,7 @@ def tsne_plot(dataset):
 
 
 DATA_SET_NAME = "HalfCheetah-v5_data"#"Grid_2D_6x6_discrete-V0_data" #
-POLICY_NAME = PolicyType.cql_continuous
+POLICY_NAME = PolicyName.cql_continuous
 NUM_EPISODES = 500
 EXPLORATION_NOISE = True
 

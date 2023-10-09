@@ -1,27 +1,25 @@
-from typing import Dict, Any, Union, Optional, Tuple
-import numpy as np
+from typing import Dict, Any
 import torch
-from torch import nn
-
 import tianshou
 from examples.offline_RL_workshop.utils import extract_dimension
-from tianshou.policy import ImitationPolicy
 import gymnasium as gym
 
 from tianshou.utils.net.common import Net
 
 policy_config = {
-    "lr": 0.001,
+    "lr": 0.0001,
     "gamma": 0.99,
     "device": "cpu",
     "hidden_sizes": [256, 256, 256],
-    "n_steps": 1,
-    "target_freq": 100,
-    "epsilon": 0.01,  #exploration noise
+    "n_steps": 3,
+    "target_freq": 500,
+    "epsilon": 1.0,  #exploration noise
 }
+
 
 def dqn_default_config():
     return policy_config
+
 
 def create_dqn_policy_from_dict(policy_config: Dict[str, Any], action_space: gym.core.ActType,
                                 observation_space: gym.core.ObsType):

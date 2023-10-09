@@ -5,7 +5,7 @@ import torch
 from torch import nn
 from tqdm import tqdm
 
-from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyType
+from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyName
 from examples.offline_RL_workshop.utils import extract_dimension, one_hot_to_integer
 from tianshou.data import ReplayBuffer, Batch
 

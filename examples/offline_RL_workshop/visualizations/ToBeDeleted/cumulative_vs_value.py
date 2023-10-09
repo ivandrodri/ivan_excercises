@@ -4,7 +4,7 @@ import gymnasium as gym
 import torch
 
 from examples.offline_RL_workshop.custom_envs.custom_envs_registration import CustomEnv, RenderMode, register_grid_envs
-from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyType, PolicyRestorationConfigFactoryRegistry
+from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyName, PolicyRestorationConfigFactoryRegistry
 from examples.offline_RL_workshop.utils import extract_dimension
 from tianshou.data import Batch
 from itertools import accumulate
@@ -120,7 +120,7 @@ config = {
     #"POLICY_NAME": PolicyType.imitation_learning,
     #"POLICY_NAME": PolicyType.bcq_continuous,
     #"POLICY_NAME": PolicyType.bcq_discrete,
-    "POLICY_NAME": PolicyType.cql_continuous,
+    "POLICY_NAME": PolicyName.cql_continuous,
     #"POLICY_NAME": PolicyType.dqn,
     #"POLICY_NAME": PolicyType.cql_discrete,
     "RENDER_MODE": RenderMode.RGB_ARRAY_LIST,

@@ -6,7 +6,7 @@ from typing import Dict
 
 from examples.offline_RL_workshop.custom_envs.custom_envs_registration import RenderMode
 from examples.offline_RL_workshop.generate_custom_datasets.generate_minari_dataset_grid_envs import MinariDatasetConfig
-from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyType, DefaultPolicyConfigFactoryRegistry
+from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyName, DefaultPolicyConfigFactoryRegistry
 
 
 def get_trained_policy_path(dataset_id):
@@ -19,10 +19,10 @@ def get_trained_policy_path(dataset_id):
 
 
 @dataclass
-class OfflineTrainedPolicyConfig:
-    name_expert_data: str
-    policy_name: PolicyType
+class TrainedPolicyConfig:
+    policy_name: PolicyName
     render_mode: RenderMode
+    name_expert_data: str = None
     minari_dataset_config: MinariDatasetConfig = None
     policy_config: DefaultPolicyConfigFactoryRegistry = None
     device: str = "cpu"

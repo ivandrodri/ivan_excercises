@@ -7,7 +7,7 @@ from examples.offline_RL_workshop.custom_envs.custom_envs_registration import re
 from examples.offline_RL_workshop.custom_envs.utils import InitialConfigEnvWrapper
 from examples.offline_RL_workshop.offline_trainings.custom_tensorboard_callbacks import CustomSummaryWriter
 from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyRestorationConfigFactoryRegistry
-from examples.offline_RL_workshop.offline_trainings.policy_config_data_class import OfflineTrainedPolicyConfig, \
+from examples.offline_RL_workshop.offline_trainings.policy_config_data_class import TrainedPolicyConfig, \
     get_trained_policy_path
 from tianshou.data import Collector
 from tianshou.env import SubprocVectorEnv
@@ -16,7 +16,7 @@ from tianshou.utils import TensorboardLogger
 
 
 def offline_training(
-        offline_policy_config: OfflineTrainedPolicyConfig,
+        offline_policy_config: TrainedPolicyConfig,
         num_epochs=1,
         batch_size=64,
         update_per_epoch=20,
@@ -81,7 +81,7 @@ def offline_training(
             test_collector,
             num_epochs,
             update_per_epoch,
-            10,
+            update_per_epoch,
             batch_size,
             stop_fn=stop_fn,
             save_best_fn=save_best_fn,

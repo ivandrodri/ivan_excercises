@@ -2,7 +2,7 @@ import json
 import os
 import gymnasium as gym
 import torch
-from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyType, PolicyRestorationConfigFactoryRegistry
+from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyName, PolicyRestorationConfigFactoryRegistry
 from examples.offline_RL_workshop.utils import get_q_value_matrix
 
 policy_name = "policy.pth"
@@ -12,7 +12,7 @@ config = {
     "NAME_ENV": "SimpleGrid-8x8-v0",
     "NAME_EXPERT_DATA": "simple_grid-gymnasium-data-v0",
     #"POLICY_NAME": PolicyType.dqn,
-    "POLICY_NAME": PolicyType.bcq_discrete,
+    "POLICY_NAME": PolicyName.bcq_discrete,
     #"POLICY_NAME": PolicyType.bcq_continuous,
     #"POLICY_NAME": PolicyType.cql_continuous,
     #"POLICY_NAME": PolicyType.imitation_learning,
