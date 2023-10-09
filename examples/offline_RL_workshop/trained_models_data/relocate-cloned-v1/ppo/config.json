@@ -1,0 +1,38 @@
+{
+    "policy_name": "ppo",
+    "render_mode": "rgb_array_list",
+    "name_expert_data": "relocate-cloned-v1",
+    "minari_dataset_config": {
+        "env_name": "AdroitHandRelocate-v1",
+        "data_set_name": "relocate-cloned-v1",
+        "num_steps": 1000000,
+        "behavior_policy": "Unknowm",
+        "initial_config_2d_grid_env": null
+    },
+    "policy_config": {
+        "lr": 0.0003,
+        "gamma": 0.99,
+        "device": "cpu",
+        "hidden_sizes": [
+            64,
+            64
+        ],
+        "vf_coef": 0.25,
+        "ent_coef": 0.0,
+        "gae_lambda": 0.95,
+        "bound_action_method": "clip",
+        "max_grad_norm": 0.5,
+        "eps_clip": 0.2,
+        "dual_clip": null,
+        "value_clip": 0,
+        "norm_adv": 0,
+        "recompute_adv": 0,
+        "rew_norm": true,
+        "lr_decay": {
+            "step_per_epoch": null,
+            "step_per_collect": null,
+            "epoch": null
+        }
+    },
+    "device": "cpu"
+}

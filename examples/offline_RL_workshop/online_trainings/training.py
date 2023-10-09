@@ -3,8 +3,8 @@ from examples.offline_RL_workshop.offline_policies.policy_registry import Policy
 from examples.offline_RL_workshop.offline_trainings.policy_config_data_class import TrainedPolicyConfig
 from examples.offline_RL_workshop.online_trainings.online_training import online_training
 
-NAME_EXPERT_DATA = "relocate-cloned-v1"
-#"Grid_2D_8x8_discrete-combined_data_set-V0"
+NAME_EXPERT_DATA = "Grid_2D_8x8_discrete-combined_data_set-V0"
+#"relocate-cloned-v1"
 #"Grid_2D_8x8_discrete-data_obst_middle_8x8_start_0_0_target_7_7-v0"
 #"Grid_2D_8x8_discrete-data_obst_middle_8x8_start_0_0_target_7_7-v0"
 #"Grid_2D_4x4_discrete-data_obst_free_4x4_start_0_0_target_3_3-v0"
