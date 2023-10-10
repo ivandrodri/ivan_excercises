@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from examples.offline.utils import load_buffer_minari
 from examples.offline_RL_workshop.offline_trainings.custom_tensorboard_callbacks import CustomSummaryWriter
-from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyType, PolicyRestorationConfigFactoryRegistry
+from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyType, PolicyFactoryRegistry
 from tianshou.data import Collector
 from tianshou.env import SubprocVectorEnv
 from tianshou.trainer import offline_trainer
@@ -87,7 +87,7 @@ test_envs = SubprocVectorEnv(
 env = gym.make(config["NAME_ENV"], render_mode=render_mode)
 
 
-policy = PolicyRestorationConfigFactoryRegistry[config["POLICY_NAME"]](action_space=env.action_space, observation_space=env.observation_space)
+policy = PolicyFactoryRegistry[config["POLICY_NAME"]](action_space=env.action_space, observation_space=env.observation_space)
 test_collector = Collector(policy, test_envs, exploration_noise=exploraton_noise)
 
 
@@ -127,7 +127,7 @@ result = offline_trainer(
 torch.save(policy.state_dict(), os.path.join(log_path, 'policy_final.pth'))
 
 final_policy_name = "policy.pth"
-final_policy = PolicyRestorationConfigFactoryRegistry[config["POLICY_NAME"]](action_space=env.action_space, observation_space=env.observation_space)
+final_policy = PolicyFactoryRegistry[config["POLICY_NAME"]](action_space=env.action_space, observation_space=env.observation_space)
 final_policy.load_state_dict(torch.load( os.path.join(log_path, final_policy_name), map_location="cpu"))
 final_collector = Collector(final_policy, env, exploration_noise=exploraton_noise)
 final_collector.collect(n_episode=20, render=1 / 35)

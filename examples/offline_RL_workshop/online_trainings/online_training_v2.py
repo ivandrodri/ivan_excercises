@@ -6,7 +6,7 @@ import torch
 from examples.offline.utils import load_buffer_minari
 from examples.offline_RL_workshop.offline_trainings.custom_tensorboard_callbacks import CustomSummaryWriter
 from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyName, \
-    PolicyRestorationConfigFactoryRegistry, DefaultPolicyConfigFactoryRegistry
+    PolicyFactoryRegistry, DefaultPolicyConfigFactoryRegistry
 from examples.offline_RL_workshop.offline_trainings.policy_config_data_class import TrainedPolicyConfig
 from tianshou.data import Collector, VectorReplayBuffer
 from tianshou.env import SubprocVectorEnv
@@ -81,7 +81,7 @@ train_envs = SubprocVectorEnv(
 env = gym.make(config["NAME_ENV"], render_mode=render_mode)
 
 
-policy = PolicyRestorationConfigFactoryRegistry.__dict__[config["POLICY_NAME"]]\
+policy = PolicyFactoryRegistry.__dict__[config["POLICY_NAME"]]\
     (
         policy_config = DefaultPolicyConfigFactoryRegistry.dqn(),
         action_space=env.action_space,

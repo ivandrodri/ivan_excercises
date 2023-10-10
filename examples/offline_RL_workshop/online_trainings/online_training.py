@@ -5,7 +5,7 @@ import torch
 from examples.offline_RL_workshop.custom_envs.custom_envs_registration import register_grid_envs
 from examples.offline_RL_workshop.custom_envs.utils import InitialConfigEnvWrapper
 from examples.offline_RL_workshop.offline_trainings.custom_tensorboard_callbacks import CustomSummaryWriter
-from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyRestorationConfigFactoryRegistry, \
+from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyFactoryRegistry, \
     PolicyType
 from examples.offline_RL_workshop.offline_trainings.policy_config_data_class import TrainedPolicyConfig, \
     get_trained_policy_path
@@ -30,6 +30,7 @@ def online_training(
         episode_per_test=10,
         frames_stack=1,
         seed=None,
+        restore_training=False,
 ):
 
     if seed is not None:
@@ -60,17 +61,25 @@ def online_training(
     policy_name = trained_policy_config.policy_name
     policy_config = trained_policy_config.policy_config
 
-    policy = PolicyRestorationConfigFactoryRegistry.__dict__[policy_name]\
+    policy = PolicyFactoryRegistry.__dict__[policy_name]\
         (
             policy_config=policy_config,
             action_space=env.action_space,
             observation_space=env.observation_space
         )
 
-    # Create collector for testing
-
-    # Load data
+    # Path to save models/config
     name_expert_data = trained_policy_config.name_expert_data
+    log_name = os.path.join(name_expert_data, policy_name)
+    log_path = get_trained_policy_path(log_name)
+
+    if restore_training:
+        policy_path = os.path.join(log_path, 'policy.pth')
+        policy.load_state_dict(torch.load(policy_path, map_location=trained_policy_config.device))
+        print("Loaded policy from: ", policy_path)
+
+
+    # Create collector for testing
 
     if number_train_envs > 1:
         #buffer = VectorReplayBuffer(buffer_size, len(train_envs))
@@ -93,11 +102,6 @@ def online_training(
 
     train_collector = Collector(policy, train_envs, buffer, exploration_noise=True)
     test_collector = Collector(policy, test_envs)
-
-
-    # Path to save models/config
-    log_name = os.path.join(name_expert_data, policy_name)
-    log_path = get_trained_policy_path(log_name)
 
     def save_best_fn(policy):
         torch.save(policy.state_dict(), os.path.join(log_path, "policy.pth"))

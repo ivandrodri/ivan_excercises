@@ -43,7 +43,7 @@ class DefaultPolicyConfigFactoryRegistry(CallableEnum):
     ppo = ppo_default_config
 
 
-class PolicyRestorationConfigFactoryRegistry(CallableEnum):
+class PolicyFactoryRegistry(CallableEnum):
     bcq_discrete = create_bcq_discrete_policy_from_dict
     cql_continuous = create_cql_continuous_policy_from_dict
     imitation_learning = create_il_policy_from_dict

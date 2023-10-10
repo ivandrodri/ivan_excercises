@@ -4,7 +4,7 @@ import gymnasium as gym
 import minari
 import numpy as np
 import torch
-from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyName, PolicyRestorationConfigFactoryRegistry
+from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyName, PolicyFactoryRegistry
 from examples.offline_RL_workshop.utils import extract_dimension, one_hot_to_integer, state_action_histogram, \
     compare_state_action_histograms
 from tianshou.data import Collector, Batch
@@ -56,7 +56,7 @@ exploraton_noise = False
 env = gym.make(config["NAME_ENV"], render_mode=render_mode)
 
 
-policy = PolicyRestorationConfigFactoryRegistry[config["POLICY_NAME"]](action_space=env.action_space, observation_space=env.observation_space)
+policy = PolicyFactoryRegistry[config["POLICY_NAME"]](action_space=env.action_space, observation_space=env.observation_space)
 policy.load_state_dict(torch.load( os.path.join(log_path, policy_name), map_location="cpu"))
 
 

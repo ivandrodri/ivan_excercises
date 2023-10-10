@@ -6,7 +6,7 @@ import tianshou.policy
 from examples.offline_RL_workshop.custom_envs.custom_envs_registration import register_grid_envs, RenderMode
 from examples.offline_RL_workshop.custom_envs.utils import is_instance_of_SimpleGridEnv, InitialConfigEnvWrapper
 from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyName, \
-    PolicyRestorationConfigFactoryRegistry
+    PolicyFactoryRegistry
 from examples.offline_RL_workshop.offline_trainings.policy_config_data_class import TrainedPolicyConfig, \
     get_trained_policy_path
 from examples.offline_RL_workshop.offline_trainings.restore_policy_model import restore_trained_offline_policy

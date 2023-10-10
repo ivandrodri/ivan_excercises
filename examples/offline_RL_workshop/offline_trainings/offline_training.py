@@ -6,7 +6,7 @@ from examples.offline.utils import load_buffer_minari
 from examples.offline_RL_workshop.custom_envs.custom_envs_registration import register_grid_envs
 from examples.offline_RL_workshop.custom_envs.utils import InitialConfigEnvWrapper
 from examples.offline_RL_workshop.offline_trainings.custom_tensorboard_callbacks import CustomSummaryWriter
-from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyRestorationConfigFactoryRegistry
+from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyFactoryRegistry
 from examples.offline_RL_workshop.offline_trainings.policy_config_data_class import TrainedPolicyConfig, \
     get_trained_policy_path
 from tianshou.data import Collector
@@ -22,6 +22,7 @@ def offline_training(
         update_per_epoch=20,
         number_test_envs=1,
         exploration_noise=True,
+        restore_training=False,
         seed=None):
 
     if seed is not None:
@@ -49,19 +50,27 @@ def offline_training(
     # Policy restoration
     policy_name = offline_policy_config.policy_name
     policy_config = offline_policy_config.policy_config
-    policy = PolicyRestorationConfigFactoryRegistry.__dict__[policy_name]\
+    policy = PolicyFactoryRegistry.__dict__[policy_name]\
         (
             policy_config=policy_config,
             action_space=env.action_space,
             observation_space=env.observation_space
         )
 
-    # Create collector for testing
-    test_collector = Collector(policy, test_envs, exploration_noise=exploration_noise)
-
     # Path to save models/config
     log_name = os.path.join(name_expert_data, policy_name)
     log_path = get_trained_policy_path(log_name)
+
+    if restore_training:
+        policy_path = os.path.join(log_path, 'policy.pth')
+        policy.load_state_dict(torch.load(policy_path, map_location=offline_policy_config.device))
+        print("Loaded policy from: ", policy_path)
+
+
+
+    # Create collector for testing
+    test_collector = Collector(policy, test_envs, exploration_noise=exploration_noise)
+
 
     def save_best_fn(policy):
         torch.save(policy.state_dict(), os.path.join(log_path, "policy.pth"))
@@ -76,13 +85,13 @@ def offline_training(
 
     # Training
     _ = offline_trainer(
-            policy,
-            data_buffer,
-            test_collector,
-            num_epochs,
-            update_per_epoch,
-            update_per_epoch,
-            batch_size,
+            policy=policy,
+            buffer=data_buffer,
+            test_collector=test_collector,
+            max_epoch=num_epochs,
+            update_per_epoch=update_per_epoch,
+            episode_per_test=number_test_envs,
+            batch_size=batch_size,
             stop_fn=stop_fn,
             save_best_fn=save_best_fn,
             logger=logger,

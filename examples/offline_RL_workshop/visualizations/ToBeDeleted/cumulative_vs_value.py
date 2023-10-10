@@ -4,7 +4,7 @@ import gymnasium as gym
 import torch
 
 from examples.offline_RL_workshop.custom_envs.custom_envs_registration import CustomEnv, RenderMode, register_grid_envs
-from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyName, PolicyRestorationConfigFactoryRegistry
+from examples.offline_RL_workshop.offline_policies.policy_registry import PolicyName, PolicyFactoryRegistry
 from examples.offline_RL_workshop.utils import extract_dimension
 from tianshou.data import Batch
 from itertools import accumulate
@@ -165,7 +165,7 @@ env = gym.make(config["NAME_ENV"], render_mode=render_mode)
 
 #print("##### ", env.max_num_steps)
 
-policy = PolicyRestorationConfigFactoryRegistry[config["POLICY_NAME"]](action_space=env.action_space, observation_space=env.observation_space)
+policy = PolicyFactoryRegistry[config["POLICY_NAME"]](action_space=env.action_space, observation_space=env.observation_space)
 policy.load_state_dict(torch.load( os.path.join(log_path, policy_name), map_location="cpu"))
 
 mean_cumulative_rew, mean_values = compute_mean_discounted_cumulative_reward(env, policy, num_episodes=20, gamma=0.99)
